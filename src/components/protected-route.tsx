@@ -19,32 +19,19 @@ export function ProtectedRoute({
   const router = useRouter();
 
   useEffect(() => {
+    // Only redirect after loading is complete
     if (!isLoading) {
       if (requireAuth && !user) {
         router.push(redirectTo);
       } else if (!requireAuth && user) {
         // For routes that should only be accessible when NOT logged in (like login page)
-        router.push('/dashboard');
+        router.push('/mygames');
       }
     }
   }, [user, isLoading, requireAuth, redirectTo, router]);
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
-  if (requireAuth && !user) {
-    return null; // Will redirect
-  }
-
-  if (!requireAuth && user) {
-    return null; // Will redirect
-  }
-
+  // Always render children - let the page handle its own loading states
+  // Only redirect happens via useEffect above
   return <>{children}</>;
 }
 

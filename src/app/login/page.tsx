@@ -8,8 +8,8 @@ import { useAuth } from '@/contexts/auth-context'
 import { Loader2 } from 'lucide-react'
 
 export default function Login() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('qayqay@qay.qay')
+  const [password, setPassword] = useState('qayqay')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useAuth()
@@ -21,8 +21,8 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      await login(username, password)
-      router.push('/dashboard')
+      await login(email, password)
+      router.push('/mygames')
     } catch (err: any) {
       setError(err.message || 'Login failed')
     } finally {
@@ -36,12 +36,12 @@ export default function Login() {
         <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium">Username</label>
+            <label htmlFor="email" className="block text-sm font-medium">Email</label>
             <Input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
             />

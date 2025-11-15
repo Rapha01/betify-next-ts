@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sidebar"
 import { BottomNav } from "@/components/bottom-nav";
 import { AuthProvider } from "@/contexts/auth-context";
+import { AuthLoadingWrapper } from "@/components/auth-loading-wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,17 +44,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <AuthProvider>
-            {/* <SidebarProvider> */}
-              {/* <AppSidebar /> */}
-              {/* <SidebarInset> */}
-
-
-              {/* </SidebarInset> */}
-            {/* </SidebarProvider> */}
-            {children}
-            <BottomNav />
+            <AuthLoadingWrapper>
+              {/* <SidebarProvider> */}
+                {/* <AppSidebar /> */}
+                {/* <SidebarInset> */}
+                <div className="pb-20">
+                  {children}
+                </div>
+                {/* </SidebarInset> */}
+              {/* </SidebarProvider> */}
+              <BottomNav />
+            </AuthLoadingWrapper>
           </AuthProvider>
         </ThemeProvider>
       </body>

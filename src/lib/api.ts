@@ -28,7 +28,7 @@ async function apiFetch(path: string, options: RequestInit = {}): Promise<any> {
 
   // Add artificial delay in development for testing loading animations
   if (process.env.NODE_ENV === 'development') {
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000));
   }
 
   const response = await fetch(`${API_BASE}${path}`, {
@@ -63,10 +63,10 @@ export const authAPI = {
     return data;
   },
 
-  async login(username: string, password: string) {
+  async login(email: string, password: string) {
     const data = await apiFetch('/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     });
     if (data.token) {
       setToken(data.token);
@@ -87,32 +87,32 @@ export const authAPI = {
   },
 };
 
-// User API
-export const userAPI = {
-  async getUsers() {
-    return apiFetch('/users');
+// Account API
+export const accountAPI = {
+  async getAccounts() {
+    return apiFetch('/account');
   },
 
-  async getUserById(id: string) {
-    return apiFetch(`/users/${id}`);
+  async getAccountById(id: string) {
+    return apiFetch(`/account/${id}`);
   },
 
-  async createUser(username: string, email: string, password: string, role?: string) {
-    return apiFetch('/users', {
+  async createAccount(username: string, email: string, password: string, role?: string) {
+    return apiFetch('/account', {
       method: 'POST',
       body: JSON.stringify({ username, email, password, role }),
     });
   },
 
-  async updateUser(id: string, field: string, value: any) {
-    return apiFetch(`/users/${id}`, {
+  async updateAccount(id: string, field: string, value: any) {
+    return apiFetch(`/account/${id}`, {
       method: 'PUT',
       body: JSON.stringify({ field, value }),
     });
   },
 
-  async deleteUser(id: string) {
-    return apiFetch(`/users/${id}`, {
+  async deleteAccount(id: string) {
+    return apiFetch(`/account/${id}`, {
       method: 'DELETE',
     });
   },
@@ -120,31 +120,25 @@ export const userAPI = {
 
 // Game API
 export const gameAPI = {
-  async getGames() {
-    return apiFetch('/games');
+  async getGamesByAccountId(accountId: string, page: number = 1, limit: number = 9) {
+    return apiFetch(`/game/account/${accountId}?page=${page}&limit=${limit}`);
   },
 
   async getGameById(id: string) {
-    return apiFetch(`/games/${id}`);
+    return apiFetch(`/game/${id}`);
   },
 
-  async createGame(name: string, genre: string, releaseDate: string) {
-    return apiFetch('/games', {
+  async createGame(title: string, genre: string, releaseDate: string) {
+    return apiFetch('/game', {
       method: 'POST',
-      body: JSON.stringify({ name, genre, releaseDate }),
+      body: JSON.stringify({ title, genre, releaseDate }),
     });
   },
 
   async updateGame(id: string, field: string, value: any) {
-    return apiFetch(`/games/${id}`, {
+    return apiFetch(`/game/${id}`, {
       method: 'PUT',
       body: JSON.stringify({ field, value }),
-    });
-  },
-
-  async deleteGame(id: string) {
-    return apiFetch(`/games/${id}`, {
-      method: 'DELETE',
     });
   },
 };
