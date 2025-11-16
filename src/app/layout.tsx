@@ -55,9 +55,10 @@ export default function RootLayout({
                 </div>
                 {/* </SidebarInset> */}
               {/* </SidebarProvider> */}
-              <BottomNav />
+              
             </AuthLoadingWrapper>
           </AuthProvider>
+          <BottomNav />
         </ThemeProvider>
       </body>
     </html>

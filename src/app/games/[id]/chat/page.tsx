@@ -9,7 +9,7 @@ import { MessageCircle, Send, AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 
 export default function ChatPage() {
-  const { game, loading, error } = useGame();
+  const { game } = useGame();
   const [message, setMessage] = useState('');
 
   const handleSendMessage = () => {
@@ -19,65 +19,15 @@ export default function ChatPage() {
     setMessage('');
   };
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-48" />
-          <Skeleton className="h-[500px] w-full" />
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card className="border-destructive">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
-              <AlertCircle className="h-5 w-5" />
-              Error Loading Chat
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">{error}</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!game) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardContent className="py-8">
-            <p className="text-center text-muted-foreground">Game not found</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <MessageCircle className="h-8 w-8" />
-            Chat
-          </h1>
-          <p className="text-muted-foreground mt-2">
-            Discuss the game with other members
-          </p>
-        </div>
-
+        
         <Card>
           <CardHeader>
             <CardTitle>Game Chat</CardTitle>
             <CardDescription>
-              Chat with other members of {game.title}
+              Chat with other members of {game!.title}
             </CardDescription>
           </CardHeader>
           <CardContent>

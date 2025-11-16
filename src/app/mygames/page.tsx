@@ -12,7 +12,7 @@ import { gameAPI } from '@/lib/api';
 import { Plus, Loader2 } from 'lucide-react';
 
 export default function MyGames() {
-  const { user } = useAuth();
+  const { account } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [gameName, setGameName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -27,11 +27,11 @@ export default function MyGames() {
   const gamesPerPage = 9;
 
   const fetchGames = async (page: number = 1) => {
-    if (!user?.id) return;
+    if (!account?.id) return;
     
     setIsLoadingGames(true);
     try {
-      const response = await gameAPI.getGamesByAccountId(user.id.toString(), page, gamesPerPage);
+      const response = await gameAPI.getGamesByAccountId(account.id, page, gamesPerPage);
       setGames(response.data || []);
       setTotalGames(response.total || 0);
       setTotalPages(Math.ceil((response.total || 0) / gamesPerPage));
@@ -45,10 +45,10 @@ export default function MyGames() {
   };
 
   useEffect(() => {
-    if (user?.id) {
+    if (account?.id) {
       fetchGames(1);
     }
-  }, [user]);
+  }, [account]);
 
   const handleCreateGame = async (e: React.FormEvent) => {
     e.preventDefault();

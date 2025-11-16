@@ -14,9 +14,9 @@ interface GameNavProps {
 export function GameNav({ gameId }: GameNavProps) {
   const pathname = usePathname();
   const { game } = useGame();
-  const { user } = useAuth();
+  const { account } = useAuth();
 
-  const isGameCreator = game?.account_id && user?.id && game.account_id === user.id.toString();
+  const isGameCreator = game?.account_id && account?.id && game.account_id === account.id;
 
   const navItems = [
     {

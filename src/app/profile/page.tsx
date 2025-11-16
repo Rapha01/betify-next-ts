@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { LogOut } from 'lucide-react';
 
 export default function Profile() {
-  const { logout, user } = useAuth();
+  const { logout, account } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -29,11 +29,11 @@ export default function Profile() {
             <div className="w-20 h-20 bg-muted rounded-full mx-auto mb-4 flex items-center justify-center">
               <span className="text-2xl">👤</span>
             </div>
-            <h2 className="text-xl font-semibold mb-2">User Profile</h2>
+            <h2 className="text-xl font-semibold mb-2">Account Profile</h2>
             <p className="text-muted-foreground mb-4">Manage your account settings</p>
-            {user && (
+            {account && (
               <p className="text-sm text-muted-foreground mb-4">
-                Logged in as: <span className="font-medium">{user.username}</span>
+                Logged in as: <span className="font-medium">{account.username}</span>
               </p>
             )}
             <Button

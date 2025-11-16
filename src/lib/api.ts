@@ -89,10 +89,6 @@ export const authAPI = {
 
 // Account API
 export const accountAPI = {
-  async getAccounts() {
-    return apiFetch('/account');
-  },
-
   async getAccountById(id: string) {
     return apiFetch(`/account/${id}`);
   },
@@ -109,13 +105,7 @@ export const accountAPI = {
       method: 'PUT',
       body: JSON.stringify({ field, value }),
     });
-  },
-
-  async deleteAccount(id: string) {
-    return apiFetch(`/account/${id}`, {
-      method: 'DELETE',
-    });
-  },
+  }
 };
 
 // Game API
@@ -139,6 +129,28 @@ export const gameAPI = {
     return apiFetch(`/game/${id}`, {
       method: 'PUT',
       body: JSON.stringify({ field, value }),
+    });
+  },
+
+  async getFavoriteGamesByAccountId(accountId: string, page: number = 1, limit: number = 9) {
+    return apiFetch(`/game/favorites/${accountId}?page=${page}&limit=${limit}`);
+  },
+};
+
+// Member API
+export const memberAPI = {
+  async getMembersByGameId(gameId: string) {
+    return apiFetch(`/member/game/${gameId}`);
+  },
+
+  async getMemberByGameAndAccountId(gameId: string, accountId: string) {
+    return apiFetch(`/member/game/${gameId}/account/${accountId}`);
+  },
+
+  async updateMember(gameId: string, accountId: string, field: string, value: any) {
+    return apiFetch(`/member/account/${accountId}/game/${gameId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ [field]: value }),
     });
   },
 };

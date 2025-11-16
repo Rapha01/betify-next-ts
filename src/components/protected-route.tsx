@@ -15,36 +15,51 @@ export function ProtectedRoute({
   redirectTo = '/login',
   requireAuth = true
 }: ProtectedRouteProps) {
-  const { user, isLoading } = useAuth();
+  const { account, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     // Only redirect after loading is complete
     if (!isLoading) {
-      if (requireAuth && !user) {
+      if (requireAuth && !account) {
         router.push(redirectTo);
-      } else if (!requireAuth && user) {
+      } else if (!requireAuth && account) {
         // For routes that should only be accessible when NOT logged in (like login page)
         router.push('/mygames');
       }
     }
-  }, [user, isLoading, requireAuth, redirectTo, router]);
+  }, [account, isLoading, requireAuth, redirectTo, router]);
 
-  // Always render children - let the page handle its own loading states
-  // Only redirect happens via useEffect above
+  // AuthLoadingWrapper at layout level handles loading state
+  // Just prevent flash of unauthorized content during redirect
+  if (!isLoading && requireAuth && !account) {
+    return null; // Will redirect via useEffect
+  }
+
+  if (!isLoading && !requireAuth && account) {
+    return null; // Will redirect via useEffect
+  }
+
+  // Only render children when auth state is verified
   return <>{children}</>;
 }
 
 // Higher-order component for protecting pages
 export function withAuth<P extends object>(
   Component: React.ComponentType<P>,
-  options?: { requireAuth?: boolean; redirectTo?: string }
+  options?: { 
+    requireAuth?: boolean; 
+    redirectTo?: string;
+  }
 ) {
   const { requireAuth = true, redirectTo } = options || {};
 
   return function AuthenticatedComponent(props: P) {
     return (
-      <ProtectedRoute requireAuth={requireAuth} redirectTo={redirectTo}>
+      <ProtectedRoute 
+        requireAuth={requireAuth} 
+        redirectTo={redirectTo}
+      >
         <Component {...props} />
       </ProtectedRoute>
     );
