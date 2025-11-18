@@ -1,96 +1,26 @@
 'use client';
 
-import React, { ReactNode } from 'react';
-import { GameProvider, useGame } from '@/contexts/game-context';
+import React from 'react';
+import { useGame } from '@/contexts/game-context';
 import { useAuth } from '@/contexts/auth-context';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import Image from 'next/image';
 import { memberAPI } from '@/lib/api';
-import { Trophy, Heart, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
-import { GameNav } from '@/components/game-nav';
+import { Trophy, Heart, CheckCircle, XCircle } from 'lucide-react';
 
-interface GameLayoutProps {
-  children: ReactNode;
-  params: Promise<{ id: string }>;
-}
-
-function GameGuard({ children, gameId }: { children: ReactNode; gameId: string }) {
-  const { game, loading, error } = useGame();
-
-  if (loading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <GameBanner />
-        <GameNav gameId={gameId} />
-        <main className="flex-1">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card className="border-destructive">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
-              <AlertCircle className="h-5 w-5" />
-              Error Loading Game
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">{error}</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!game) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Game Not Found</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">The game you're looking for doesn't exist.</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  return <>{children}</>;
-}
-
-interface GameLayoutProps {
-  children: ReactNode;
-  params: Promise<{ id: string }>;
-}
-
-function GameBanner() {
+export function GameBanner() {
   const { game, loading, member, refetchMember } = useGame();
   const { account } = useAuth();
 
   const handleFavoriteToggle = async () => {
-    console.log('handleFavoriteToggle called', { game, member, account });
     if (!game || !account) {
-      console.log('Missing game or account');
       return;
     }
     
     try {
-      console.log('Calling API to toggle favorite');
       const newFavoritedState = !member?.is_favorited;
       await memberAPI.updateMember(game.id, account.id, 'is_favorited', newFavoritedState);
-      console.log('API call successful, refetching member');
       // Refetch member to update the state
       refetchMember();
     } catch (err) {
@@ -140,16 +70,18 @@ function GameBanner() {
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
       
       {/* Favorite Button */}
-      <div className="absolute top-4 left-4 z-10">
-        <Button
-          variant="outline"
-          size="sm"
-          className="bg-black/60 hover:bg-black/80 text-white border-white/50"
-          onClick={handleFavoriteToggle}
-        >
-          <Heart className={`w-5 h-5 ${member?.is_favorited ? 'fill-red-500 text-red-500' : 'text-white'}`} />
-        </Button>
-      </div>
+      {account && (
+        <div className="absolute top-4 left-4 z-10">
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-black/60 hover:bg-black/80 text-white border-white/50"
+            onClick={handleFavoriteToggle}
+          >
+            <Heart className={`w-5 h-5 ${member?.is_favorited ? 'fill-red-500 text-red-500' : 'text-white'}`} />
+          </Button>
+        </div>
+      )}
       
       {/* Overlay with status badge */}
       <div className="absolute top-4 right-4">
@@ -178,23 +110,5 @@ function GameBanner() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function GameLayout({ children, params }: GameLayoutProps) {
-  const { id } = React.use(params);
-
-  return (
-    <GameProvider gameId={id}>
-      <GameGuard gameId={id}>
-        <div className="flex flex-col min-h-screen">
-          <GameBanner />
-          <GameNav gameId={id} />
-          <main className="flex-1">
-            {children}
-          </main>
-        </div>
-      </GameGuard>
-    </GameProvider>
   );
 }

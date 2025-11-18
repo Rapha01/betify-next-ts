@@ -8,10 +8,10 @@ import { useGame } from '@/contexts/game-context';
 import { useAuth } from '@/contexts/auth-context';
 
 interface GameNavProps {
-  gameId: string;
+  gameSlug: string;
 }
 
-export function GameNav({ gameId }: GameNavProps) {
+export function GameNav({ gameSlug }: GameNavProps) {
   const pathname = usePathname();
   const { game } = useGame();
   const { account } = useAuth();
@@ -21,27 +21,27 @@ export function GameNav({ gameId }: GameNavProps) {
   const navItems = [
     {
       title: 'Overview',
-      href: `/games/${gameId}`,
+      href: `/game/${gameSlug}`,
       icon: Home,
     },
     {
       title: 'Bets',
-      href: `/games/${gameId}/bets`,
+      href: `/game/${gameSlug}/bets`,
       icon: Trophy,
     },
     {
       title: 'Leaderboard',
-      href: `/games/${gameId}/leaderboard`,
+      href: `/game/${gameSlug}/leaderboard`,
       icon: TrendingUp,
     },
     {
       title: 'Chat',
-      href: `/games/${gameId}/chat`,
+      href: `/game/${gameSlug}/chat`,
       icon: MessageCircle,
     },
     ...(isGameCreator ? [{
       title: 'Settings',
-      href: `/games/${gameId}/settings`,
+      href: `/game/${gameSlug}/settings`,
       icon: Settings,
     }] : []),
   ];

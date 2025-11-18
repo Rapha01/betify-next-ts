@@ -8,8 +8,13 @@ export interface Game {
   id: string;
   account_id: string;
   title: string;
+  slug: string;
   description: string;
   banner_url: string;
+  language: string;
+  currency_name: string;
+  start_currency: number;
+  is_public: boolean;
   bet_count: number;
   member_count: number;
   is_active: boolean;
@@ -32,6 +37,7 @@ interface GameContextType {
   loading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
+  updateGame: (updates: Partial<Game>) => Promise<void>;
   member: Member | null;
   memberLoading: boolean;
   memberError: string | null;
@@ -42,10 +48,10 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 interface GameProviderProps {
   children: ReactNode;
-  gameId: string;
+  gameSlug: string;
 }
 
-export function GameProvider({ children, gameId }: GameProviderProps) {
+export function GameProvider({ children, gameSlug }: GameProviderProps) {
   const { account } = useAuth();
   const [game, setGame] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
@@ -58,10 +64,13 @@ export function GameProvider({ children, gameId }: GameProviderProps) {
     try {
       setLoading(true);
       setError(null);
-      const data = await gameAPI.getGameById(gameId);
+      console.log('Fetching game with slug:', gameSlug); // Debug log
+      const data = await gameAPI.getGameBySlug(gameSlug);
+      console.log('Game data received:', data); // Debug log
       setGame(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load game';
+      console.error('Error fetching game:', err); // Debug log
       setError(errorMessage);
       console.error('Error fetching game:', err);
     } finally {
@@ -70,7 +79,7 @@ export function GameProvider({ children, gameId }: GameProviderProps) {
   };
 
   const fetchMember = async () => {
-    if (!account) {
+    if (!account || !game) {
       setMember(null);
       setMemberLoading(false);
       setMemberError(null);
@@ -79,7 +88,7 @@ export function GameProvider({ children, gameId }: GameProviderProps) {
     try {
       setMemberLoading(true);
       setMemberError(null);
-      const data = await memberAPI.getMemberByGameAndAccountId(gameId, account.id);
+      const data = await memberAPI.getMemberByGameAndAccountId(game.id, account.id);
       setMember(data);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load member';
@@ -91,15 +100,30 @@ export function GameProvider({ children, gameId }: GameProviderProps) {
     }
   };
 
+  const updateGame = async (updates: Partial<Game>) => {
+    if (!game) throw new Error('No game loaded');
+    try {
+      await gameAPI.updateGame(game.id, updates);
+      setGame({ ...game, ...updates });
+    } catch (error) {
+      throw error;
+    }
+  };
+
   useEffect(() => {
-    if (gameId) {
+    if (gameSlug) {
       fetchGame();
+    }
+  }, [gameSlug]);
+
+  useEffect(() => {
+    if (game) {
       fetchMember();
     }
-  }, [gameId, account]);
+  }, [game, account]);
 
   return (
-    <GameContext.Provider value={{ game, loading, error, refetch: fetchGame, member, memberLoading, memberError, refetchMember: fetchMember }}>
+    <GameContext.Provider value={{ game, loading, error, refetch: fetchGame, updateGame, member, memberLoading, memberError, refetchMember: fetchMember }}>
       {children}
     </GameContext.Provider>
   );

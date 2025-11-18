@@ -1,16 +1,15 @@
 'use client';
 
 import { useGame } from '@/contexts/game-context';
-import { useAuth } from '@/contexts/auth-context';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { GameNav } from '@/components/game-nav';
-import { Trophy, Users, Calendar, CheckCircle, XCircle, AlertCircle, Heart } from 'lucide-react';
+import { Trophy, Users, Calendar } from 'lucide-react';
 
-export default function GamePage() {
+export function GameOverviewClient() {
   const { game } = useGame();
-  const { account } = useAuth();
+
+  if (!game) {
+    return null;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -23,7 +22,7 @@ export default function GamePage() {
               <Trophy className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{game!.bet_count}</div>
+              <div className="text-2xl font-bold">{game.bet_count}</div>
               <p className="text-xs text-muted-foreground">Active betting pools</p>
             </CardContent>
           </Card>
@@ -34,7 +33,7 @@ export default function GamePage() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{game!.member_count}</div>
+              <div className="text-2xl font-bold">{game.member_count}</div>
               <p className="text-xs text-muted-foreground">Active participants</p>
             </CardContent>
           </Card>
@@ -45,9 +44,9 @@ export default function GamePage() {
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{game!.is_active ? 'Active' : 'Inactive'}</div>
+              <div className="text-2xl font-bold">{game.is_active ? 'Active' : 'Inactive'}</div>
               <p className="text-xs text-muted-foreground">
-                Since {new Date(game!.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                Since {new Date(game.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
               </p>
             </CardContent>
           </Card>
@@ -61,7 +60,7 @@ export default function GamePage() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground leading-relaxed">
-              {game!.description || 'No description available for this game.'}
+              {game.description || 'No description available for this game.'}
             </p>
           </CardContent>
         </Card>

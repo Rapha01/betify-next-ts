@@ -1,14 +1,16 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { authAPI, getToken, setToken } from '../lib/api';
+import { authAPI, accountAPI, getToken, setToken } from '../lib/api';
 
 interface Account {
   id: string;
   username: string;
   email: string;
   role: string;
+  is_email_verified: boolean;
   avatarUrl: string;
+  created_at: number;
 }
 
 interface AuthContextType {
@@ -16,6 +18,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateAccount: (updates: Partial<Account & { password?: string }>) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -73,11 +76,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateAccount = async (updates: Partial<Account>) => {
+    if (!account) throw new Error('No account loaded');
+    try {
+      await accountAPI.updateAccount(account.id, updates);
+      setAccount({ ...account, ...updates });
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const value: AuthContextType = {
     account,
     login,
     register,
     logout,
+    updateAccount,
     isLoading,
   };
 

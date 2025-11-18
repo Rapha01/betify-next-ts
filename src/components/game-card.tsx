@@ -24,7 +24,7 @@ export function GameCard({ game }: GameCardProps) {
   const fallbackImage = '/placeholder-game.jpg'; // You can create a placeholder or use a default
   
   return (
-    <Link href={`/games/${game.id}`}>
+    <Link href={`/game/${game.slug}`}>
       <Card className="flex flex-col overflow-hidden h-full transition-all duration-300 shadow-[0_0_15px_rgba(59,130,246,0.2)] transform -translate-y-1 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:-translate-y-2 cursor-pointer">
         {/* Banner Image */}
         <div className="relative w-full h-48 bg-muted overflow-hidden">

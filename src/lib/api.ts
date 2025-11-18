@@ -1,5 +1,7 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
+console.log('API_BASE:', API_BASE); // Debug log
+
 // Token management
 function getToken(): string | null {
   if (typeof window === 'undefined') return null;
@@ -100,10 +102,10 @@ export const accountAPI = {
     });
   },
 
-  async updateAccount(id: string, field: string, value: any) {
+  async updateAccount(id: string, updates: Record<string, any>) {
     return apiFetch(`/account/${id}`, {
       method: 'PUT',
-      body: JSON.stringify({ field, value }),
+      body: JSON.stringify(updates),
     });
   }
 };
@@ -118,6 +120,10 @@ export const gameAPI = {
     return apiFetch(`/game/${id}`);
   },
 
+  async getGameBySlug(slug: string) {
+    return apiFetch(`/game/slug/${slug}`);
+  },
+
   async createGame(title: string, genre: string, releaseDate: string) {
     return apiFetch('/game', {
       method: 'POST',
@@ -125,10 +131,10 @@ export const gameAPI = {
     });
   },
 
-  async updateGame(id: string, field: string, value: any) {
+  async updateGame(id: string, updates: Record<string, any>) {
     return apiFetch(`/game/${id}`, {
       method: 'PUT',
-      body: JSON.stringify({ field, value }),
+      body: JSON.stringify(updates),
     });
   },
 
