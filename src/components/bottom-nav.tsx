@@ -40,36 +40,31 @@ export function BottomNav() {
   const pathname = usePathname()
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t">
-      <div className="relative flex items-center px-2 py-2">
-        <NavigationMenu className="flex-1 max-w-none">
-          <NavigationMenuList className="flex w-full justify-around max-w-md mx-auto">
-            {navItems.map((item, index) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-navbar-border bg-navbar">
+      <div className="relative container mx-auto px-4">
+        <div className="flex items-center justify-center gap-2">
+          {navItems.map((item) => {
+            const Icon = item.icon
+            const isActive = pathname === item.href
 
-              return (
-                <NavigationMenuItem key={item.href} className={cn("flex-1", index < navItems.length - 1 && "border-r border-border")}>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "flex flex-col items-center justify-center gap-1 rounded-xl px-2 py-1 text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none md:flex-row md:gap-2 md:text-sm",
-                        isActive
-                          ? "bg-accent/20 text-foreground scale-95"
-                          : "text-muted-foreground"
-                      )}
-                    >
-                      <Icon className="h-5 w-5 md:h-4 md:w-4" />
-                      <span className="text-center">{item.title}</span>
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              )
-            })}
-          </NavigationMenuList>
-        </NavigationMenu>
-        <div className="absolute right-2">
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors",
+                  isActive
+                    ? "text-navbar-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-navbar-primary"
+                    : "text-navbar-foreground/60 hover:text-navbar-foreground hover:bg-navbar-accent"
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                <span className="hidden sm:inline">{item.title}</span>
+              </Link>
+            )
+          })}
+        </div>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2">
           <ThemeToggle />
         </div>
       </div>

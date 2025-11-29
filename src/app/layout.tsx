@@ -1,25 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AppSidebar } from "@/components/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
 import { ThemeProvider } from "@/components/theme-provider";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
 import { BottomNav } from "@/components/bottom-nav";
 import { AuthProvider } from "@/contexts/auth-context";
-import { AuthLoadingWrapper } from "@/components/auth-loading-wrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,19 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <AuthProvider>
-            <AuthLoadingWrapper>
-              {/* <SidebarProvider> */}
-                {/* <AppSidebar /> */}
-                {/* <SidebarInset> */}
-                <div className="pb-20">
-                  {children}
-                </div>
-                {/* </SidebarInset> */}
-              {/* </SidebarProvider> */}
-              
-            </AuthLoadingWrapper>
+            <div className="min-h-screen bg-background pb-10">
+              {children}
+            </div>
           </AuthProvider>
           <BottomNav />
         </ThemeProvider>

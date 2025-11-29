@@ -2,8 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { MessageBox } from '@/components/ui/message-box'
 import { useAuth } from '@/contexts/auth-context'
 import { Loader2 } from 'lucide-react'
 
@@ -39,9 +42,12 @@ export default function Register() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="w-full max-w-md p-6 bg-card rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold text-center mb-6">Register</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">Register</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="username" className="block text-sm font-medium">Username</label>
             <Input
@@ -81,13 +87,16 @@ export default function Register() {
               id="confirmPassword"
               type="password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value)
+                setError('')
+              }}
               required
               disabled={isLoading}
             />
           </div>
           {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
+            <MessageBox message={error} type="error" />
           )}
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
@@ -99,11 +108,12 @@ export default function Register() {
               'Register'
             )}
           </Button>
-        </form>
-        <p className="text-center mt-4">
-          Already have an account? <a href="/login" className="text-primary">Login</a>
-        </p>
-      </div>
+          </form>
+          <p className="text-center mt-4">
+            Already have an account? <Link href="/login" className="text-primary">Login</Link>
+          </p>
+        </CardContent>
+      </Card>
     </div>
   )
 }

@@ -1,32 +1,25 @@
-import type { Config } from 'tailwindcss';
-
-const config: Config = {
-  content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+// @ts-ignore - safelist is valid but not in types
+export default {
+  safelist: [
+    // Text colors
+    'text-primary',
+    'text-success',
+    'text-destructive',
+    'text-warning',
+    // Border colors
+    'border-primary',
+    'border-success',
+    'border-destructive',
+    'border-warning',
+    // Background colors
+    'bg-primary/10',
+    'bg-success/10',
+    'bg-destructive/10',
+    'bg-warning/10',
+    // Border-l colors (for bet cards)
+    'border-l-primary',
+    'border-l-success',
+    'border-l-destructive',
+    'border-l-warning',
   ],
-  theme: {
-    extend: {
-      gridTemplateColumns: {
-        '13': 'repeat(13, minmax(0, 1fr))',
-      },
-      colors: {
-        blue: {
-          400: '#2589FE',
-          500: '#0070F3',
-          600: '#2F6FEB',
-        },
-      },
-    },
-    keyframes: {
-      shimmer: {
-        '100%': {
-          transform: 'translateX(100%)',
-        },
-      },
-    },
-  },
-  plugins: [require('@tailwindcss/forms')],
 };
-export default config;

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Trophy, TrendingUp, MessageCircle, Settings, Home } from 'lucide-react';
+import { Trophy, TrendingUp, MessageCircle, Settings, Home, Sparkles } from 'lucide-react';
 import { useGame } from '@/contexts/game-context';
 import { useAuth } from '@/contexts/auth-context';
 
@@ -22,34 +22,35 @@ export function GameNav({ gameSlug }: GameNavProps) {
     {
       title: 'Overview',
       href: `/game/${gameSlug}`,
-      icon: Home,
+      icon: Home
     },
     {
       title: 'Bets',
       href: `/game/${gameSlug}/bets`,
-      icon: Trophy,
+      icon: Trophy
     },
     {
       title: 'Leaderboard',
       href: `/game/${gameSlug}/leaderboard`,
-      icon: TrendingUp,
+      icon: TrendingUp
     },
     {
       title: 'Chat',
       href: `/game/${gameSlug}/chat`,
       icon: MessageCircle,
+      gradient: 'from-purple-500 to-pink-500',
     },
     ...(isGameCreator ? [{
       title: 'Settings',
       href: `/game/${gameSlug}/settings`,
-      icon: Settings,
+      icon: Settings
     }] : []),
   ];
 
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
+    <nav className="sticky top-0 z-40 border-b border-navbar-border bg-navbar">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-center gap-1 overflow-x-auto no-scrollbar py-2">
+        <div className="flex items-center justify-center gap-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -59,10 +60,10 @@ export function GameNav({ gameSlug }: GameNavProps) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors',
+                  'relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors',
                   isActive
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    ? 'text-navbar-foreground after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-navbar-primary'
+                    : 'text-navbar-foreground/60 hover:text-navbar-foreground hover:bg-navbar-accent'
                 )}
               >
                 <Icon className="h-4 w-4" />

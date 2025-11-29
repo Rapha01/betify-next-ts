@@ -5,9 +5,10 @@ import { ProtectedRoute } from '@/components/protected-route';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { MessageBox } from '@/components/ui/message-box';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from '@/components/ui/pagination';
-import { GameCard, type Game } from '@/components/game-card';
+import { GameCard, type Game } from '@/components/game/game-card';
 import { gameAPI } from '@/lib/api';
 import { Plus, Loader2 } from 'lucide-react';
 
@@ -35,7 +36,7 @@ export default function MyGames() {
       setGames(response.data || []);
       setTotalGames(response.total || 0);
       setTotalPages(Math.ceil((response.total || 0) / gamesPerPage));
-      setCurrentPage(page);
+      setCurrentPage(page); 
     } catch (err: any) {
       console.error('Failed to fetch games:', err);
       setGames([]);
@@ -63,6 +64,7 @@ export default function MyGames() {
       setIsDialogOpen(false);
       // Refresh the games list
       await fetchGames(1);
+      
     } catch (err: any) {
       setError(err.message || 'Failed to create game');
     } finally {
@@ -98,14 +100,17 @@ export default function MyGames() {
                     id="gameName"
                     type="text"
                     value={gameName}
-                    onChange={(e) => setGameName(e.target.value)}
+                    onChange={(e) => {
+                      setGameName(e.target.value)
+                      setError('')
+                    }}
                     placeholder="Enter game name"
                     required
                     disabled={isLoading}
                   />
                 </div>
                 {error && (
-                  <div className="text-red-500 text-sm text-center">{error}</div>
+                  <MessageBox message={error} type="error" />
                 )}
                 <Button type="submit" className="w-full" disabled={isLoading || !gameName.trim()}>
                   {isLoading ? (

@@ -30,7 +30,7 @@ export function ProtectedRoute({
     }
   }, [account, isLoading, requireAuth, redirectTo, router]);
 
-  // AuthLoadingWrapper at layout level handles loading state
+  // AuthProvider at layout level handles loading state with built-in loading spinner
   // Just prevent flash of unauthorized content during redirect
   if (!isLoading && requireAuth && !account) {
     return null; // Will redirect via useEffect

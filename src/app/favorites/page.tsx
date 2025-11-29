@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { ProtectedRoute } from '@/components/protected-route';
 import { useAuth } from '@/contexts/auth-context';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationEllipsis } from '@/components/ui/pagination';
-import { GameCard, type Game } from '@/components/game-card';
+import { GameCard, type Game } from '@/components/game/game-card';
 import { gameAPI } from '@/lib/api';
 import { Loader2 } from 'lucide-react';
 

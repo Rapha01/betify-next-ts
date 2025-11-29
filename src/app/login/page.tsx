@@ -2,8 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { MessageBox } from '@/components/ui/message-box'
 import { useAuth } from '@/contexts/auth-context'
 import { Loader2 } from 'lucide-react'
 
@@ -32,9 +35,12 @@ export default function Login() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="w-full max-w-md p-6 bg-card rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">Login</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium">Email</label>
             <Input
@@ -52,13 +58,16 @@ export default function Login() {
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value)
+                setError('')
+              }}
               required
               disabled={isLoading}
             />
           </div>
           {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
+            <MessageBox message={error} type="error" />
           )}
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
@@ -70,16 +79,17 @@ export default function Login() {
               'Login'
             )}
           </Button>
-        </form>
-        <div className="text-center mt-4 space-y-2">
-          <p>
-            <a href="/forgot-password" className="text-primary text-sm">Forgot password?</a>
-          </p>
-          <p>
-            Don't have an account? <a href="/register" className="text-primary">Register</a>
-          </p>
-        </div>
-      </div>
+          </form>
+          <div className="text-center mt-4 space-y-2">
+            <p>
+              <Link href="/forgot-password" className="text-primary text-sm">Forgot password?</Link>
+            </p>
+            <p>
+              Don't have an account? <Link href="/register" className="text-primary">Register</Link>
+            </p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

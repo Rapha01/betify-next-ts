@@ -1,8 +1,12 @@
+
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { MessageBox } from '@/components/ui/message-box'
 import { Loader2 } from 'lucide-react'
 
 export default function ForgotPassword() {
@@ -21,9 +25,12 @@ export default function ForgotPassword() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
-      <div className="w-full max-w-md p-6 bg-card rounded-lg shadow-lg">
-        <h1 className="text-2xl font-bold text-center mb-6">Forgot Password</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">Forgot Password</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium">Email</label>
             <Input
@@ -45,12 +52,17 @@ export default function ForgotPassword() {
               'Send Reset Link'
             )}
           </Button>
-        </form>
-        {message && <p className="text-center mt-4 text-sm text-muted-foreground">{message}</p>}
-        <p className="text-center mt-4">
-          Remember your password? <a href="/login" className="text-primary">Login</a>
-        </p>
-      </div>
+          </form>
+          {message && (
+            <div className="mt-4">
+              <MessageBox message={message} type="info" />
+            </div>
+          )}
+          <p className="text-center mt-4">
+            Remember your password? <Link href="/login" className="text-primary">Login</Link>
+          </p>
+        </CardContent>
+      </Card>
     </div>
   )
 }

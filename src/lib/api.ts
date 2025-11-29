@@ -1,21 +1,6 @@
+import { normalizeBet, normalizeBets } from './bet-utils';
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-
-console.log('API_BASE:', API_BASE); // Debug log
-
-// Token management
-function getToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem('token');
-}
-
-function setToken(token: string | null) {
-  if (typeof window === 'undefined') return;
-  if (token) {
-    localStorage.setItem('token', token);
-  } else {
-    localStorage.removeItem('token');
-  }
-}
 
 // Base fetch function with auth
 async function apiFetch(path: string, options: RequestInit = {}): Promise<any> {
@@ -23,25 +8,15 @@ async function apiFetch(path: string, options: RequestInit = {}): Promise<any> {
 
   headers.set('Content-Type', 'application/json');
 
-  const token = getToken();
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
-  }
-
   // Add artificial delay in development for testing loading animations
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === 'development') 
     await new Promise(resolve => setTimeout(resolve, 1000));
-  }
 
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers,
+    credentials: 'include', // Enable sending/receiving cookies
   });
-
-  if (response.status === 401) {
-    setToken(null);
-    throw new Error('Unauthorized');
-  }
 
   const data = await response.json().catch(() => null);
 
@@ -70,21 +45,15 @@ export const authAPI = {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
-    if (data.token) {
-      setToken(data.token);
-    }
+    // Cookie is set automatically by backend
     return data;
   },
 
   async logout() {
-    try {
-      await apiFetch('/auth/logout', { method: 'POST' });
-    } finally {
-      setToken(null);
-    }
+    await apiFetch('/auth/logout', { method: 'POST' });
   },
 
-  async getCurrentUser() {
+  async getCurrentAccount() {
     return apiFetch('/auth/me');
   },
 };
@@ -161,5 +130,41 @@ export const memberAPI = {
   },
 };
 
-// Utility functions
-export { getToken, setToken };
+// Bet API
+export const betAPI = {
+  async getBetsByGameId(gameId: string) {
+    const data = await apiFetch(`/bet/game/${gameId}`);
+    return normalizeBets(data.bets);
+  },
+
+  async getBetById(betId: string) {
+    const bet = await apiFetch(`/bet/${betId}`);
+    return normalizeBet(bet);
+  },
+
+  async getBetBySlug(betSlug: string) {
+    const bet = await apiFetch(`/bet/slug/${betSlug}`);
+    return normalizeBet(bet);
+  },
+
+  async createBet(gameId: string, betData: any) {
+    const bet = await apiFetch(`/bet/game/${gameId}`, {
+      method: 'POST',
+      body: JSON.stringify(betData),
+    });
+    return normalizeBet(bet);
+  },
+
+  async updateBet(betId: string, updates: Record<string, any>) {
+    return apiFetch(`/bet/${betId}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    });
+  },
+
+  async deleteBet(betId: string) {
+    return apiFetch(`/bet/${betId}`, {
+      method: 'DELETE',
+    });
+  },
+};

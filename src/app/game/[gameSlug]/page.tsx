@@ -1,22 +1,22 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { serverGameAPI } from '@/lib/serverApi';
-import { GameOverviewClient } from '@/components/game-overview-client';
+import { GameOverviewClient } from '@/components/game/game-overview-client';
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ gameSlug: string }>;
 }
 
 // Generate metadata for SEO (crawlers will see this!)
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { gameSlug } = await params;
   
   try {
-    const game = await serverGameAPI.getGameBySlug(slug);
+    const game = await serverGameAPI.getGameBySlug(gameSlug);
     
     const title = `${game.title} - Betify`;
     const description = game.description || `Join ${game.title} on Betify! ${game.member_count} members, ${game.bet_count} active bets. Start betting now!`;
-    const url = `${process.env.NEXT_PUBLIC_APP_URL || 'https://betify.com'}/game/${slug}`;
+    const url = `${process.env.NEXT_PUBLIC_APP_URL || 'https://betify.com'}/game/${gameSlug}`;
     
     return {
       title,
@@ -56,11 +56,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function GamePage({ params }: PageProps) {
-  const { slug } = await params;
+  const { gameSlug } = await params;
   
   try {
     // Fetch game data on the server for initial render
-    const game = await serverGameAPI.getGameBySlug(slug);
+    const game = await serverGameAPI.getGameBySlug(gameSlug);
     
     // Server-rendered content for crawlers
     return (
@@ -74,7 +74,7 @@ export default async function GamePage({ params }: PageProps) {
               '@type': 'Game',
               name: game.title,
               description: game.description,
-              url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://betify.com'}/game/${slug}`,
+              url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://betify.com'}/game/${gameSlug}`,
               image: game.banner_url,
               aggregateRating: {
                 '@type': 'AggregateRating',
